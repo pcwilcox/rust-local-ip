@@ -1,12 +1,16 @@
 extern crate regex;
 
-use std::process::Command;
+
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr};
+use std::process::Command;
 use regex::Regex;
 
 #[cfg(not(windows))]
-pub fn get() -> Option<IpAddr> {
+pub fn get(x: Option<&str>) -> Option<IpAddr> {
+    let s : &str = x.unwrap_or("");
+
     let output = Command::new("ifconfig")
+        .arg(s)
         .output()
         .expect("failed to execute `ifconfig`");
 
@@ -30,8 +34,12 @@ pub fn get() -> Option<IpAddr> {
 }
 
 #[cfg(windows)]
-pub fn get() -> Option<IpAddr> {
-    let output = Command::new("ipconfig").output().expect("Command IPCONFIG failed.");
+pub fn get(x: Option<&str>) -> Option<IpAddr> {
+    let s : &str = x.unwrap_or("");
+    let output = Command::new("ipconfig")
+        .arg(s)
+        .output()
+        .expect("Command IPCONFIG failed.");
 
     let stdout = String::from_utf8(output.stdout).unwrap();
 
