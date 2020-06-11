@@ -9,7 +9,8 @@ use regex::Regex;
 pub fn get(x: Option<&str>) -> Option<IpAddr> {
     let s : &str = x.unwrap_or("");
 
-    let output = Command::new("ifconfig")
+    let output = Command::new("ip")
+        .arg("a")
         .arg(s)
         .output()
         .expect("failed to execute `ifconfig`");
